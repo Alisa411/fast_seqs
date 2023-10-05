@@ -13,3 +13,16 @@ def gc_content(sequence: str) -> float:
     total_count = len(sequence)
     gc_content = round((gc_count / total_count) * 100, 2)
     return gc_content
+
+def seq_length(sequence: str) -> int:
+    """
+    Calculates the length of fastq sequence.
+
+    :param sequence: fastq sequence
+    :type sequence: str
+    :return: the length as a number
+    :rtype: int
+    """
+    total_count = len(sequence)
+    return total_count
+
