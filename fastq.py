@@ -25,8 +25,7 @@ def seq_length(sequence: str) -> int:
     :return: the length as a number
     :rtype: int
     """
-    total_count = len(sequence)
-    return total_count
+    return len(sequence)
 
 #the mean encoding offset for quality scores function
 def mean_encoding_offset(quality_string):
