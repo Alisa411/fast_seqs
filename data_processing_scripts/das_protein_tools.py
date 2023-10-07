@@ -1,9 +1,6 @@
 # importing necessary modules
-import protein_dict as pd
+import protein_dict as prd
 from random import choice
-
-
-AMINO_LETTERS = set("ACDEFGHIKLMNPQRSTVWY")
 
 
 # Function to determine is the sequence is a protein or not
@@ -18,7 +15,7 @@ def is_protein(seq: str) -> bool:
         returns True or False
     """
     unique_chars = set(seq)
-    aminoacids = set(pd.aa_monoistopic_mass_dict.keys())
+    aminoacids = set(prd.AA_MONOISOTOPIC_MASS_DICT.keys())
     return unique_chars.issubset(aminoacids)
 
 
@@ -42,7 +39,7 @@ def get_pI(
 
     if pI_values is None:
         # Default pKa_values if not provided
-        pI_values = pd.aa_pI
+        pI_values = prd.AA_pI
 
     aminoacid_pIs = []
 
@@ -101,7 +98,7 @@ def convert_to_3L_code(seq: str) -> str:
         same sequence but in three-letter coding
     """
     seq = seq.upper()
-    sequence = "".join(pd.aa_one_to_three_letter[aa] for aa in seq)
+    sequence = "".join(prd.AA_ONE_TO_THREE_LETTER[aa] for aa in seq)
     return sequence[:-1]
 
 
@@ -117,7 +114,7 @@ def protein_mass(seq: str) -> float:
         returns molecular weight
     """
     seq = seq.upper()
-    mass = sum(pd.aa_monoistopic_mass_dict[aa] for aa in seq)
+    mass = sum(prd.AA_MONOISOTOPIC_MASS_DICT[aa] for aa in seq)
     return mass
 
 
@@ -137,7 +134,7 @@ def translate_protein_rna(seq: str) -> str:
     seq = seq.upper()
     rna = ""
     for aa in seq:
-        codon = choice(pd.aa_codon_dict[aa])
+        codon = choice(prd.AA_CODON_DICT[aa])
         rna += codon
     return rna
 
@@ -178,7 +175,7 @@ def main(*args: str):
         raise ValueError(f"No such action: {action}")
 
     for sequence in args[:-1]:
-        if not set(sequence).issubset(set(AMINO_LETTERS)):
+        if not set(sequence).issubset(prd.AA_LETTERS):
             raise ValueError(f"The sequence is not protein sequence: {sequence}")
 
     result = action_list[action](*args[:-1])
