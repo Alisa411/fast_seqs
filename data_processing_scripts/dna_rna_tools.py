@@ -83,11 +83,13 @@ def run_dna_rna_tools(*args: str):
 
     for sequence in sequences:
         if all(base in drd.DNA_LETTERS or base in drd.RNA_LETTERS for base in sequence):
-            if action == 'transcribe' and not set(sequence).issubset(drd.DNA_LETTERS):
+            if 'U' in sequence and 'T' in sequence:
+                raise ValueError("Invalid sequence: Contains both U and T")
+            elif action == 'transcribe' and not set(sequence).issubset(drd.DNA_LETTERS):
                 raise ValueError("Invalid DNA sequence for transcription")
             result = action_list[action](sequence)
         else:
-            result = f"Invalid procedure: {action}"
+            raise ValueError(f"Invalid sequence for procedure: {action}")
         results.append(result)
 
     return results if len(results) > 1 else results[0]
