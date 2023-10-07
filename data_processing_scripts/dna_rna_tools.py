@@ -57,7 +57,7 @@ def reverse_complement(sequence):
     return reverse(complement(sequence))
 
 
-def run_dna_rna_tools(*args: str):
+def main_dna_rna_tools(*args: str):
     """
     Run various DNA/RNA sequence manipulation tools.
 
