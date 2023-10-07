@@ -54,7 +54,7 @@ def mean_encoding_offset(quality_string: str) -> float:
     return mean_offset
 
 
-def main(seqs, gc_bounds=(0, 100), length_bounds=(0, 2 ** 32), quality_threshold=0):
+def main_fastq_tools(seqs, gc_bounds=(0, 100), length_bounds=(0, 2 ** 32), quality_threshold=0):
     """
     Process fastq sequences based on specified criteria and return filtered results.
 
