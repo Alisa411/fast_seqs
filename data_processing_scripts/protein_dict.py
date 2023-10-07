@@ -100,4 +100,4 @@ AA_pI = {
 
 # Set of letters corresponding to amino acids:
 
-AMINO_LETTERS = set("ACDEFGHIKLMNPQRSTVWY")
+AA_LETTERS = set("ACDEFGHIKLMNPQRSTVWY")
