@@ -3,22 +3,6 @@ import protein_dict as prd
 from random import choice
 
 
-# Function to determine is the sequence is a protein or not
-def is_protein(seq: str) -> bool:
-    """
-    This function checks if the sequence is a protein or not
-
-    Arguments:
-        seq (str): A sequence of aminoacids
-
-    Output:
-        returns True or False
-    """
-    unique_chars = set(seq)
-    aminoacids = set(prd.AA_MONOISOTOPIC_MASS_DICT.keys())
-    return unique_chars.issubset(aminoacids)
-
-
 # Function to get pI for each aa
 def get_pI(
     sequence: str,
