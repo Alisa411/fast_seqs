@@ -123,7 +123,7 @@ def translate_protein_rna(seq: str) -> str:
     return rna
 
 
-def main(*args: str):
+def main_protein_tools(*args: str):
     """
     Main function to perform various actions on protein sequences.
 
