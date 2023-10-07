@@ -1,7 +1,9 @@
 
+import dna_rna_dict as drd
+
 
 def transcribe(sequence):
-    return ''.join(TRANSCRIBE_DICT[base] if base in TRANSCRIBE_DICT else base for base in sequence)
+    return ''.join(drd.TRANSCRIBE_DICT[base] if base in drd.TRANSCRIBE_DICT else base for base in sequence)
 
 
 def reverse(sequence):
@@ -9,7 +11,7 @@ def reverse(sequence):
 
 
 def complement(sequence):
-    return ''.join(COMPLEMENT_DICT[base] if base in COMPLEMENT_DICT else base for base in sequence)
+    return ''.join(drd.COMPLEMENT_DICT[base] if base in drd.COMPLEMENT_DICT else base for base in sequence)
 
 
 def reverse_complement(sequence):
