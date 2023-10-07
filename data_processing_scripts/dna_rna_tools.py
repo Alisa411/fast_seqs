@@ -1,5 +1,3 @@
-TRANSCRIBE_DICT = {'T': 'U', 't': 'u'}
-COMPLEMENT_DICT = {'A': 'T', 'T': 'A', 'C': 'G', 'G': 'C', 'a': 't', 't': 'a', 'c': 'g', 'g': 'c'}
 
 
 def transcribe(sequence):
