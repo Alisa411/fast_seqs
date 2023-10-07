@@ -98,3 +98,6 @@ AA_pI = {
     "V": 6.0,  # Valine
 }
 
+# Set of letters corresponding to amino acids:
+
+AMINO_LETTERS = set("ACDEFGHIKLMNPQRSTVWY")
