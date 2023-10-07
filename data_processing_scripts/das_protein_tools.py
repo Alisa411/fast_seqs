@@ -147,6 +147,7 @@ def main(*args: str):
     """
 
     action = args[-1]
+    sequences = args[:-1]
     action_list = {
         "get_pI": get_pI,
         "calculate_aa_freq": calculate_aa_freq,
@@ -158,10 +159,13 @@ def main(*args: str):
     if action not in action_list:
         raise ValueError(f"No such action: {action}")
 
-    for sequence in args[:-1]:
+    for sequence in sequences:
         if not set(sequence).issubset(prd.AA_LETTERS):
             raise ValueError(f"The sequence is not protein sequence: {sequence}")
 
-    result = action_list[action](*args[:-1])
+    result = action_list[action](*sequences)
 
     return result
+
+
+
