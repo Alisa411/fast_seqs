@@ -1,3 +1,7 @@
+# Import dna_rna_dict.py containing dictionaries for working with dna and rna sequences
+import dna_rna_dict as drd
+
+
 # GC content frequency function
 
 def gc_content(sequence: str) -> float:
@@ -13,6 +17,7 @@ def gc_content(sequence: str) -> float:
     total_count = len(sequence)
     gc_content1 = round((gc_count / total_count) * 100, 2)
     return gc_content1
+
 
 # fastq sequence length function
 
@@ -49,9 +54,6 @@ def mean_encoding_offset(quality_string: str) -> float:
     return mean_offset
 
 
-fastq_letters = set("ATGCatgc")
-
-
 def main(seqs, gc_bounds=(0, 100), length_bounds=(0, 2 ** 32), quality_threshold=0):
     """
     Process fastq sequences based on specified criteria and return filtered results.
@@ -78,7 +80,7 @@ def main(seqs, gc_bounds=(0, 100), length_bounds=(0, 2 ** 32), quality_threshold
 
     for seq_name, (sequence, quality_string) in seqs.items():
         # Checking if it is a fastq sequence
-        if not all(letter in fastq_letters for letter in sequence):
+        if not all(letter in drd.DNA_LETTERS for letter in sequence):
             print(f"Skipping non-fastq sequence: {seq_name}")
             continue
 
@@ -100,6 +102,3 @@ def main(seqs, gc_bounds=(0, 100), length_bounds=(0, 2 ** 32), quality_threshold
     print(filtered_seqs)
 
     return filtered_seqs
-
-
-
