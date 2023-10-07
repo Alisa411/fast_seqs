@@ -12,7 +12,10 @@ def transcribe(sequence):
     Returns:
         str: The transcribed RNA sequence.
     """
-    return ''.join(drd.TRANSCRIBE_DICT[base] if base in drd.TRANSCRIBE_DICT else base for base in sequence)
+    if set(sequence).issubset(drd.DNA_LETTERS):
+        return ''.join(drd.TRANSCRIBE_DICT[base] if base in drd.TRANSCRIBE_DICT else base for base in sequence)
+    else:
+        raise ValueError("Invalid DNA sequence for transcription")
 
 
 def reverse(sequence):
@@ -54,12 +57,12 @@ def reverse_complement(sequence):
     return reverse(complement(sequence))
 
 
-def run_dna_rna_tools(*arguments):
+def run_dna_rna_tools(*args: str):
     """
     Run various DNA/RNA sequence manipulation tools.
 
     Args:
-        *arguments: Variable number of arguments. The first n-1 arguments should be DNA/RNA sequences,
+        *args: Variable number of arguments. The first n-1 arguments should be DNA/RNA sequences,
                     and the last argument should be a string specifying the action to be performed.
 
     Returns:
@@ -67,25 +70,24 @@ def run_dna_rna_tools(*arguments):
 
     """
 
-    action = arguments[-1].lower()
-    sequences = arguments[:-1]
+    action = args[-1].lower()
+    sequences = args[:-1]
     results = []
 
+    action_list = {
+        "transcribe": transcribe,
+        "reverse": reverse,
+        "complement": complement,
+        "reverse_complement": reverse_complement,
+    }
+
     for sequence in sequences:
-        if all(base in 'ATCGUatcgu' for base in sequence):
-            if action == 'transcribe':
-                result = transcribe(sequence)
-            elif action == 'reverse':
-                result = reverse(sequence)
-            elif action == 'complement':
-                result = complement(sequence)
-            elif action == 'reverse_complement':
-                result = reverse_complement(sequence)
+        if all(base in drd.DNA_LETTERS or base in drd.RNA_LETTERS for base in sequence):
+            if action == 'transcribe' and not set(sequence).issubset(drd.DNA_LETTERS):
+                raise ValueError("Invalid DNA sequence for transcription")
+            result = action_list[action](sequence)
         else:
             result = f"Invalid procedure: {action}"
-    else:
-        result = "Invalid dna/rna sequence"
-
         results.append(result)
 
-        return results if len(results) > 1 else results[0]
+    return results if len(results) > 1 else results[0]
