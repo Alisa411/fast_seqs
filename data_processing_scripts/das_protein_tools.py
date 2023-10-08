@@ -166,6 +166,3 @@ def main_protein_tools(*args: str):
     result = action_list[action](*sequences)
 
     return result
-
-
-
