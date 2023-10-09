@@ -1,7 +1,7 @@
 # fast_seqs
 This repository contains a utility called **fast_seqs** for working with fastq sequences.
 
-_fast_seqs is a bionformatic tool for beggining your steps in bioinformatical analysis. It works with nucleic acid sequences, protein and fastq sequences. Read the **Usage** section to get to know abilities of this tool.
+_fast_seqs is a bionformatic tool for beggining your steps in bioinformatical analysis. It works with nucleic acid sequences, protein and fastq sequences. Read the **Usage** section to get to know abilities of this tool._
 
 ## Installation
 
