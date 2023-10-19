@@ -134,12 +134,15 @@ def parse_file(filename):
 
 def save_filtered_fastq(filename, filtered_data):
     """
-    Save filtered fastq data to a new file.
+    Save filtered FASTQ sequences to a new FASTQ file.
 
-    :param filename: Full path to the input fastq file
-    :type filename: str
-    :param filtered_data: Filtered fastq data in the form of a dictionary
-    :type filtered_data: dict
+    Args:
+        filename (str): The name of the output FASTQ file.
+        filtered_data (dict): A dictionary of filtered FASTQ sequences, where keys are sequence IDs,
+            and values are tuples of sequence and quality score strings.
+
+    Returns:
+        None: This function does not return a value but saves the filtered sequences to the specified FASTQ file.
     """
 
     with open(filename, 'w') as f:
@@ -171,7 +174,3 @@ def main(input_path: str, output_filename: str = None):
     output_path = "./fastq_filtrator_resuls/" + output_filename
     save_filtered_fastq(output_path, filtered_seqs)
 
-
-input_path = "/home/alisa411/HW6/HW6_Files/example_data/example_fastq.fastq"
-output_filename = "my_test"
-main(input_path, output_filename)
