@@ -123,46 +123,4 @@ def translate_protein_rna(seq: str) -> str:
     return rna
 
 
-def main_protein_tools(*args: str):
-    """
-    Main function to perform various actions on protein sequences.
 
-    Args:
-    - *args: Variable number of arguments. The first n-1 arguments should be protein sequences,
-             and the last argument should be a string specifying the action to be performed.
-
-    Returns:
-    - The result of the specified action on the input protein sequences.
-
-    Raises:
-    - ValueError: If the specified action is not supported or if there is an error in the number of sequences.
-                  Also raised if the input sequences are not valid protein sequences.
-
-    Supported Actions:
-    - "get_pI": Calculate isoelectric points for each amino acid in the sequence.
-    - "calculate_aa_freq": Calculate the frequency of each amino acid in a protein sequence.
-    - "translate_protein_rna": Translate amino acid sequence to RNA, using random codons for each amino acid.
-    - "convert_to_3L_code": Convert one-letter amino acid sequence to three-letter coding.
-    - "protein_mass": Calculate the molecular weight of the protein sequence.
-    """
-
-    action = args[-1]
-    sequences = args[:-1]
-    action_list = {
-        "get_pI": get_pI,
-        "calculate_aa_freq": calculate_aa_freq,
-        "translate_protein_rna": translate_protein_rna,
-        "convert_to_3L_code": convert_to_3L_code,
-        "protein_mass": protein_mass,
-    }
-
-    if action not in action_list:
-        raise ValueError(f"No such action: {action}")
-
-    for sequence in sequences:
-        if not set(sequence).issubset(prd.AA_LETTERS):
-            raise ValueError(f"The sequence is not protein sequence: {sequence}")
-
-    result = action_list[action](*sequences)
-
-    return result
