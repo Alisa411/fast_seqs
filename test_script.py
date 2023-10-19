@@ -1,6 +1,6 @@
 # Import dna_rna_dict.py containing dictionaries for working with dna and rna sequences
 import dna_rna_dict as drd
-
+import os
 
 # GC content frequency function
 
@@ -97,9 +97,7 @@ def main_fastq_tools(seqs, gc_bounds=(0, 100), length_bounds=(0, 2 ** 32), quali
         if gc_bounds[0] <= gc <= gc_bounds[1] and \
                 length_bounds[0] <= seq_len <= length_bounds[1] and \
                 mean_offset >= quality_threshold:
-            filtered_seqs[seq_name] = sequence
-
-    print(filtered_seqs)
+            filtered_seqs[seq_name] = (sequence, quality_string)
 
     return filtered_seqs
 
@@ -114,18 +112,22 @@ def parse_file(filename):
         data = {}
 
         i = 0
+        # print(len(lines))
+        # print(*lines, sep="\nx\n")
+        lines = lines[:-1]
         while i < len(lines):
             line = lines[i].strip()
             # Parse SEQ_ID as '@' after the '\n'
-            if line.startswith('@') and (i == len(lines) - 1 or not lines[i + 1].startswith('@')):
-                # Extract SEQ_ID except paired-end or not and index info
-                sequence_id = line.split(' ', 1)[0] #SEQ_ID
+            if line.startswith('@'): # and (i == len(lines) - 1 or not lines[i + 1].startswith('@')):
+            # Extract SEQ_ID except paired-end or not and index info
+                sequence_id = line.split(' ')[0] #SEQ_ID
                 sequence = lines[i + 1].strip()  # SEQ_FASTA
                 quality = lines[i + 3].strip()  # QUALITY
 
                 data[sequence_id] = (sequence, quality)
 
-            i += 1
+                i += 4
+
 
     return data
 
@@ -134,22 +136,30 @@ def save_filtered_fastq(filename, filtered_data):
     """
     Save filtered fastq data to a new file.
 
-    :param filename: Name of the output file
+    :param filename: Full path to the input fastq file
     :type filename: str
     :param filtered_data: Filtered fastq data in the form of a dictionary
     :type filtered_data: dict
     """
+
     with open(filename, 'w') as f:
         for sequence_id, (sequence, quality) in filtered_data.items():
             f.write(f"{sequence_id}\n{sequence}\n+\n{quality}\n")
 
-# Пример использования:
-filtered_data = {}  # Здесь вам нужно будет предоставить отфильтрованные данные в виде словаря
-save_filtered_fastq("filtered_output.fastq", filtered_data)
+
+def main(input_path: str, output_filename: str = None):
+    parsed_data = parse_file(input_path)
+    filtered_seqs = main_fastq_tools(parsed_data)
+    if output_filename is None:
+        output_filename = input_path.split("/")[-1]
+    else:
+        output_filename = output_filename + ".fastq"
+
+    os.makedirs("./fastq_filtrator_resuls", exist_ok=True)
+    output_path = "./fastq_filtrator_resuls/" + output_filename
+    save_filtered_fastq(output_path, filtered_seqs)
 
 
-# Вызываем parse_file
-#parsed_data = parse_file("/home/alisa411/HW6/HW6_Files/example_data/example_fastq.fastq")
-
-# Вызываем main_fastq_tools, передавая ей результат parse_file
-#filtered_seqs = main_fastq_tools(parsed_data, gc_bounds=(40, 60), length_bounds=(25, 100), quality_threshold=30)
+input_path = "/home/alisa411/HW6/HW6_Files/example_data/example_fastq.fastq"
+output_filename = "my_test"
+main(input_path, output_filename)
