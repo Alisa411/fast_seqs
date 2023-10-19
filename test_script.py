@@ -97,7 +97,7 @@ def main_fastq_tools(seqs, gc_bounds=(0, 100), length_bounds=(0, 2 ** 32), quali
         if gc_bounds[0] <= gc <= gc_bounds[1] and \
                 length_bounds[0] <= seq_len <= length_bounds[1] and \
                 mean_offset >= quality_threshold:
-            filtered_seqs[seq_name] = (sequence, quality_string)
+            filtered_seqs[seq_name] = (sequence, quality_string) # back the dictionary with filtered sequences
 
     return filtered_seqs
 
@@ -117,16 +117,16 @@ def parse_file(filename):
         lines = lines[:-1]
         while i < len(lines):
             line = lines[i].strip()
-            # Parse SEQ_ID as '@' after the '\n'
-            if line.startswith('@'): # and (i == len(lines) - 1 or not lines[i + 1].startswith('@')):
-            # Extract SEQ_ID except paired-end or not and index info
-                sequence_id = line.split(' ')[0] #SEQ_ID
+            # Parse 4 lines per 1 sequence
+            # The first line should contain '@' sign
+            if line.startswith('@'):
+                sequence_id = line.split(' ')[0]  #SEQ_ID except paired-end or not and index info
                 sequence = lines[i + 1].strip()  # SEQ_FASTA
                 quality = lines[i + 3].strip()  # QUALITY
 
                 data[sequence_id] = (sequence, quality)
 
-                i += 4
+                i += 4  # iteration on 4 lines per 1 sequence
 
 
     return data
