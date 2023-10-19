@@ -88,7 +88,7 @@ def main_protein_tools(*args: str):
 
     return result
 
-def main(input_path: str, output_filename: str = None):
+def main_fastq(input_path: str, output_filename: str = None):
     """
     Process a FASTQ file, apply filtering, and save the filtered sequences to a new FASTQ file.
 
