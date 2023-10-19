@@ -150,27 +150,5 @@ def save_filtered_fastq(filename, filtered_data):
             f.write(f"{sequence_id}\n{sequence}\n+\n{quality}\n")
 
 
-def main(input_path: str, output_filename: str = None):
-    """
-    Process a FASTQ file, apply filtering, and save the filtered sequences to a new FASTQ file.
 
-    Args:
-        input_path (str): The path to the input FASTQ file.
-        output_filename (str, optional): The name for the output FASTQ file. If not provided, the input file name is used.
-
-    Returns:
-        None: This function does not return a value but saves the filtered sequences to a new FASTQ file.
-    """
-
-
-    parsed_data = parse_file(input_path)
-    filtered_seqs = main_fastq_tools(parsed_data)
-    if output_filename is None:
-        output_filename = input_path.split("/")[-1]
-    else:
-        output_filename = output_filename + ".fastq"
-
-    os.makedirs("./fastq_filtrator_resuls", exist_ok=True)
-    output_path = "./fastq_filtrator_resuls/" + output_filename
-    save_filtered_fastq(output_path, filtered_seqs)
 
