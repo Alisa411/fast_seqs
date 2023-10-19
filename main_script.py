@@ -1,31 +1,92 @@
-from data_processing_scripts.dna_rna_tools import main_dna_rna_tools
-from data_processing_scripts.das_protein_tools import main_protein_tools
-from data_processing_scripts.fastq_tools import main_fastq_tools
+from data_processing_scripts.dna_rna_tools import transcribe, reverse, complement, reverse_complement
+from data_processing_scripts.das_protein_tools import get_pI, calculate_aa_freq, translate_protein_rna, convert_to_3L_code, protein_mass
+from data_processing_scripts.fastq_script import main_fastq_tools, parse_file, save_filtered_fastq
+import data_processing_scripts.dna_rna_dict as drd
+import data_processing_scripts.protein_dict as prd
+import os
 
 
+def main_dna_rna_tools(*args: str):
+    """
+    Run various DNA/RNA sequence manipulation tools.
 
-# Call the main_dna_rna_tools function with the necessary arguments.
-result = main_dna_rna_tools("ATcg", "reverse")
-print(result)
+    Args:
+        *args: Variable number of arguments. The first n-1 arguments should be DNA/RNA sequences,
+                    and the last argument should be a string specifying the action to be performed.
 
-# Call the main_protein_tools function with the necessary arguments.
-result = main_protein_tools("ACDE", "protein_mass")
-print(result)
+    Returns:
+        str or list: The result of the specified action on the input sequences.
 
-# Call the main_fastq_tools function with the necessary arguments.
-EXAMPLE_FASTQ = {
-    '@SRX079804:1:SRR292678:1:1101:21885:21885': (
-        'ACAGCAACATAAACATGATGGGATGGCGTAAGCCCCCGAGATATCAGTTTACCCAGGATAAGAGATTAAATTATGAGCAACATTATTAA',
-        'FGGGFGGGFGGGFGDFGCEBB@CCDFDDFFFFBFFGFGEFDFFFF;D@DD>C@DDGGGDFGDGG?GFGFEGFGGEF@FDGGGFGFBGGD'),
-}
-filtered_sequences = main_fastq_tools(
-    seqs=EXAMPLE_FASTQ,
-    gc_bounds=(0, 80),  # GC content от 40% до 60%
-    length_bounds=(10, 100),  # Длина последовательности от 10 до 100
-    quality_threshold=0  # Порог качества
-)
+    """
 
-print(filtered_sequences)
+    action = args[-1].lower()
+    sequences = args[:-1]
+    results = []
+
+    action_list = {
+        "transcribe": transcribe,
+        "reverse": reverse,
+        "complement": complement,
+        "reverse_complement": reverse_complement,
+    }
+
+    for sequence in sequences:
+        if all(base in drd.DNA_LETTERS or base in drd.RNA_LETTERS for base in sequence):
+            if 'U' in sequence and 'T' in sequence:
+                raise ValueError("Invalid sequence: Contains both U and T")
+            elif action == 'transcribe' and not set(sequence).issubset(drd.DNA_LETTERS):
+                raise ValueError("Invalid DNA sequence for transcription")
+            result = action_list[action](sequence)
+        else:
+            raise ValueError(f"Invalid sequence for procedure: {action}")
+        results.append(result)
+
+    return results if len(results) > 1 else results[0]
+
+
+def main_protein_tools(*args: str):
+    """
+    Main function to perform various actions on protein sequences.
+
+    Args:
+    - *args: Variable number of arguments. The first n-1 arguments should be protein sequences,
+             and the last argument should be a string specifying the action to be performed.
+
+    Returns:
+    - The result of the specified action on the input protein sequences.
+
+    Raises:
+    - ValueError: If the specified action is not supported or if there is an error in the number of sequences.
+                  Also raised if the input sequences are not valid protein sequences.
+
+    Supported Actions:
+    - "get_pI": Calculate isoelectric points for each amino acid in the sequence.
+    - "calculate_aa_freq": Calculate the frequency of each amino acid in a protein sequence.
+    - "translate_protein_rna": Translate amino acid sequence to RNA, using random codons for each amino acid.
+    - "convert_to_3L_code": Convert one-letter amino acid sequence to three-letter coding.
+    - "protein_mass": Calculate the molecular weight of the protein sequence.
+    """
+
+    action = args[-1]
+    sequences = args[:-1]
+    action_list = {
+        "get_pI": get_pI,
+        "calculate_aa_freq": calculate_aa_freq,
+        "translate_protein_rna": translate_protein_rna,
+        "convert_to_3L_code": convert_to_3L_code,
+        "protein_mass": protein_mass,
+    }
+
+    if action not in action_list:
+        raise ValueError(f"No such action: {action}")
+
+    for sequence in sequences:
+        if not set(sequence).issubset(prd.AA_LETTERS):
+            raise ValueError(f"The sequence is not protein sequence: {sequence}")
+
+    result = action_list[action](*sequences)
+
+    return result
 
 def main(input_path: str, output_filename: str = None):
     """
