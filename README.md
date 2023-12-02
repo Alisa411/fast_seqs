@@ -225,6 +225,42 @@ filtered_sequences = main_fastq_tools(
 )
 print(filtered_sequences)
 ```
+### Working with Fasta Files
+This module provides functionalities to manipulate FASTA files, including converting multi-line sequences into one-line format and shifting the start position of sequences within a FASTA file.
+
+## Functions
+
+### convert_multiline_fasta_to_oneline
+- Description: Converts a multi-line FASTA file into a one-line FASTA file format.
+- Arguments:
+    - input_fasta (str): Path to the input multi-line FASTA file.
+    - output_fasta (str, optional): Path for the output one-line FASTA file. If not provided, a default name will be generated.
+- Returns:
+    - str: A message indicating the status of the operation, including the name of the output file.
+ 
+### change_fasta_start_pos
+- Description: Shifts the starting position of a sequence within a one-line FASTA file.
+- Arguments:
+    - input_fasta (str): Path to the input one-line FASTA file.
+    - shift (int): The amount to shift the starting position of the sequence. Positive values move the sequence to the right, negative values to the left.
+    - output_fasta (str, optional): Path for the output one-line FASTA file. If not provided, a default name will be generated.
+- Returns:
+    - str: A message indicating the status of the operation, including the name of the output file.
+ 
+## Usage
+You can use these functions by calling them in your Python code. For your convenience im the directory you can find input examples ('example_multiline_fasta', 'shift_example.fasta').
+Here's an example:
+
+```python
+from fasta_manipulation import convert_multiline_fasta_to_oneline, change_fasta_start_pos
+
+# Example usage of convert_multiline_fasta_to_oneline
+convert_multiline_fasta_to_oneline('example_multiline_fasta', 'output_oneline.fasta')
+
+# Example usage of change_fasta_start_pos
+change_fasta_start_pos('shift_example.fasta', 3, 'output_shifted.fasta')
+```
+
 
 ## Troubleshooting
 
