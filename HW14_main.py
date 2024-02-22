@@ -64,11 +64,43 @@ class NucleicAcidSequence(BiologicalSequence):
         'c': 'g',
         'g': 'c'}
 
-class NucleicAcidSequence():
-    def
+    def __len__(self):
+        return len(self.sequence)
+
+    def __getitem__(self, index):
+        return self.sequence[index]
+
+    def is_valid_alphabet(self):
+        raise NotImplementedError("Method is_valid_alphabet must be implemented in subclasses.")
+
+    def complement(self):
+        return ''.join(self.COMPLEMENT_MAP.get(base, base) for base in self.sequence)
+
+    def gc_content(self, as_percentage=False):
+        gc_count = self.sequence.count('G') + self.sequence.count('C')
+        total_count = len(self.sequence)
+        gc_content = gc_count / total_count if total_count > 0 else 0
+        return gc_content * 100 if as_percentage else gc_content
+
 
 class DNASequence(NucleicAcidSequence):
     DNA_LETTERS = set("ATGCatgc")
 
+    TRANSCRIBE_DICT = {
+        'T': 'U',
+        't': 'u'
+    }
+
+
 class RNASequence(NucleicAcidSequence):
     RNA_LETTERS = set("AUGCaugc")
+
+
+class AminoAcidSequence(BiologicalSequence):
+    AA_LETTERS = set("ACDEFGHIKLMNPQRSTVWY")
+    def __init__(self, sequence):
+        super().__init__(sequence)
+
+    def translate_to_rna(self):
+        rna_seq = translate_protein_rna(self.sequence)
+        return rna_seq
