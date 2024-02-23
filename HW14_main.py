@@ -1,5 +1,44 @@
 from abc import ABC, abstractmethod
 
+from Bio import SeqIO
+from Bio.SeqUtils import gc_fraction
+
+def filter_fastq(input_path: str, output_filename: str = None, gc_bounds=(0, 100), length_bounds=(0, 2 ** 32), quality_threshold=0):
+    """
+    Filter a FASTQ file based on specified criteria and save the filtered sequences to a new FASTQ file.
+
+    Args:
+        input_path (str): The path to the input FASTQ file.
+        output_filename (str, optional): The name for the output FASTQ file. If not provided, the input file name is used.
+        gc_bounds (tuple, optional): GC content filter bounds (default is (0, 100)).
+        length_bounds (tuple, optional): Sequence length filter bounds (default is (0, 2**32)).
+        quality_threshold (int, optional): Quality score threshold (default is 0).
+
+    Returns:
+        None: This function does not return a value but saves the filtered sequences to a new FASTQ file.
+    """
+    filtered_seqs = []
+
+    for record in SeqIO.parse(input_path, "fastq"):
+        gc_percent = gc_fraction(str(record.seq)) * 100
+        seq_len = len(record)
+        mean_offset = sum(record.letter_annotations["phred_quality"]) / len(record)
+
+        if gc_bounds[0] <= gc_percent <= gc_bounds[1] and \
+                length_bounds[0] <= seq_len <= length_bounds[1] and \
+                mean_offset >= quality_threshold:
+            filtered_seqs.append(record)
+
+    if output_filename is None:
+        output_filename = input_path.split("/")[-1]
+    else:
+        output_filename = output_filename + ".fastq"
+
+    output_path = output_filename
+    SeqIO.write(filtered_seqs, output_path, "fastq")
+
+
+
 class BiologicalSequence(ABC):
     """
         Abstract base class representing a biological sequence.
