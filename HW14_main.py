@@ -71,9 +71,11 @@ class BiologicalSequence(ABC):
     def __repr__(self):
         return f"{self.__class__.__name__}('{self.sequence}')"
 
-    @abstractmethod
     def is_valid_alphabet(self):
         pass
+
+    def check_alphabet(self):
+        return set(self.sequence).issubset(self.ALPHABET)
 
 
 class NucleicAcidSequence(BiologicalSequence):
@@ -123,7 +125,7 @@ class NucleicAcidSequence(BiologicalSequence):
 
 
 class DNASequence(NucleicAcidSequence):
-    DNA_LETTERS = set("ATGCatgc")
+    ALPHABET = set("ATGCatgc")
 
     TRANSCRIBE_DICT = {
         'T': 'U',
@@ -136,7 +138,7 @@ class DNASequence(NucleicAcidSequence):
 
 
 class RNASequence(NucleicAcidSequence):
-    RNA_LETTERS = set("AUGCaugc")
+    ALPHABET = set("AUGCaugc")
 
 
 class AminoAcidSequence(BiologicalSequence):
@@ -152,7 +154,7 @@ class AminoAcidSequence(BiologicalSequence):
             returns sequence of aminoacids
         """
 
-    AA_LETTERS = set("ACDEFGHIKLMNPQRSTVWYacdefghiklmnpqrstvwy")
+    ALPHABET = set("ACDEFGHIKLMNPQRSTVWYacdefghiklmnpqrstvwy")
 
     AA_CODON_DICT = {
         "G": ["GGA", "GGU", "GGC", "GGG"],
@@ -176,12 +178,10 @@ class AminoAcidSequence(BiologicalSequence):
         "M": ["AUG"],
         "W": ["UGG"],
     }
-    
+
     def __init__(self, sequence):
         super().__init__(sequence)
 
-    def is_valid_alphabet(self):
-        return set(self.sequence).issubset(self.AA_LETTERS)
 
     def translate_to_rna(self):
         rna_seq = ""
