@@ -113,7 +113,7 @@ class NucleicAcidSequence(BiologicalSequence):
         raise NotImplementedError("Method is_valid_alphabet must be implemented in subclasses.")
 
     def complement(self):
-        return ''.join(self.COMPLEMENT_MAP.get(base, base) for base in self.sequence)
+        return ''.join(self.COMPLEMENT_DICT.get(base, base) for base in self.sequence)
 
     def gc_content(self, as_percentage=False):
         gc_count = self.sequence.count('G') + self.sequence.count('C')
@@ -153,6 +153,30 @@ class AminoAcidSequence(BiologicalSequence):
         """
 
     AA_LETTERS = set("ACDEFGHIKLMNPQRSTVWYacdefghiklmnpqrstvwy")
+
+    AA_CODON_DICT = {
+        "G": ["GGA", "GGU", "GGC", "GGG"],
+        "R": ["AGA", "AGG", "CGA", "CGC", "CGG", "CGU"],
+        "S": ["AGC", "AGU", "UCA", "UCC", "UCG", "UCU"],
+        "E": ["GAA", "GAG"],
+        "P": ["CCA", "CCC", "CCG", "CCU"],
+        "L": ["CUA", "CUC", "CUG", "CUU", "UUA", "UUG"],
+        "V": ["GUA", "GUC", "GUG", "GUU"],
+        "T": ["ACA", "ACC", "ACG", "ACU"],
+        "A": ["GCA", "GCC", "GCG", "GCU"],
+        "I": ["AUA", "AUC", "AUU"],
+        "F": ["UUC", "UUU"],
+        "H": ["CAC", "CAU"],
+        "Y": ["UAC", "UAU"],
+        "Q": ["CAA", "CAG"],
+        "C": ["UGC", "UGU"],
+        "N": ["AAC", "AAU"],
+        "D": ["GAC", "GAU"],
+        "K": ["AAA", "AAG"],
+        "M": ["AUG"],
+        "W": ["UGG"],
+    }
+    
     def __init__(self, sequence):
         super().__init__(sequence)
 
