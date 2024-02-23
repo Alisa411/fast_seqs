@@ -130,16 +130,38 @@ class DNASequence(NucleicAcidSequence):
         't': 'u'
     }
 
+    def transcribe(self):
+        transcribed_seq = ''.join(self.TRANSCRIBE_DICT.get(base, base) for base in self.sequence)
+        return transcribed_seq
+
 
 class RNASequence(NucleicAcidSequence):
     RNA_LETTERS = set("AUGCaugc")
 
 
 class AminoAcidSequence(BiologicalSequence):
-    AA_LETTERS = set("ACDEFGHIKLMNPQRSTVWY")
+    """
+        This function takes  aminoacid sequence and translates in to the RNA.
+        As most of the aminoacids are coded with several different codons,
+        this function will take a random codon of the set for such aminoacids.
+
+        Arguments:
+            seq (str): A sequence of RNA molecule
+
+        Output:
+            returns sequence of aminoacids
+        """
+
+    AA_LETTERS = set("ACDEFGHIKLMNPQRSTVWYacdefghiklmnpqrstvwy")
     def __init__(self, sequence):
         super().__init__(sequence)
 
+    def is_valid_alphabet(self):
+        return set(self.sequence).issubset(self.AA_LETTERS)
+
     def translate_to_rna(self):
-        rna_seq = translate_protein_rna(self.sequence)
+        rna_seq = ""
+        for aa in self.sequence:
+            codon = choice(AA_CODON_DICT[aa])
+            rna_seq += codon
         return rna_seq
