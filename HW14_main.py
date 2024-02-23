@@ -1,7 +1,9 @@
 from abc import ABC, abstractmethod
+from random import choice
 
 from Bio import SeqIO
 from Bio.SeqUtils import gc_fraction
+
 
 def filter_fastq(input_path: str, output_filename: str = None, gc_bounds=(0, 100), length_bounds=(0, 2 ** 32), quality_threshold=0):
     """
@@ -37,8 +39,6 @@ def filter_fastq(input_path: str, output_filename: str = None, gc_bounds=(0, 100
     output_path = output_filename
     SeqIO.write(filtered_seqs, output_path, "fastq")
 
-
-
 class BiologicalSequence(ABC):
     """
         Abstract base class representing a biological sequence.
@@ -56,6 +56,8 @@ class BiologicalSequence(ABC):
         """
     def __init__(self, sequence):
         self.sequence = sequence
+        if not self.alphabet_checking():
+            raise ValueError("Invalid characters in the sequence.")
 
     @abstractmethod
     def __len__(self):
@@ -71,11 +73,10 @@ class BiologicalSequence(ABC):
     def __repr__(self):
         return f"{self.__class__.__name__}('{self.sequence}')"
 
-    def is_valid_alphabet(self):
-        pass
-
-    def check_alphabet(self):
-        return set(self.sequence).issubset(self.ALPHABET)
+    def alphabet_checking(self):
+        if not set(self.sequence) <= set(type(self).ALPHABET):
+            return False
+        return True
 
 
 class NucleicAcidSequence(BiologicalSequence):
@@ -105,14 +106,14 @@ class NucleicAcidSequence(BiologicalSequence):
         'c': 'g',
         'g': 'c'}
 
+    def __init__(self, sequence):
+        super().__init__(sequence)
+
     def __len__(self):
         return len(self.sequence)
 
     def __getitem__(self, index):
         return self.sequence[index]
-
-    def is_valid_alphabet(self):
-        raise NotImplementedError("Method is_valid_alphabet must be implemented in subclasses.")
 
     def complement(self):
         return ''.join(self.COMPLEMENT_DICT.get(base, base) for base in self.sequence)
@@ -131,6 +132,9 @@ class DNASequence(NucleicAcidSequence):
         'T': 'U',
         't': 'u'
     }
+
+    def __init__(self, sequence):
+        super().__init__(sequence)
 
     def transcribe(self):
         transcribed_seq = ''.join(self.TRANSCRIBE_DICT.get(base, base) for base in self.sequence)
@@ -156,36 +160,36 @@ class AminoAcidSequence(BiologicalSequence):
 
     ALPHABET = set("ACDEFGHIKLMNPQRSTVWYacdefghiklmnpqrstvwy")
 
-    AA_CODON_DICT = {
-        "G": ["GGA", "GGU", "GGC", "GGG"],
-        "R": ["AGA", "AGG", "CGA", "CGC", "CGG", "CGU"],
-        "S": ["AGC", "AGU", "UCA", "UCC", "UCG", "UCU"],
-        "E": ["GAA", "GAG"],
-        "P": ["CCA", "CCC", "CCG", "CCU"],
-        "L": ["CUA", "CUC", "CUG", "CUU", "UUA", "UUG"],
-        "V": ["GUA", "GUC", "GUG", "GUU"],
-        "T": ["ACA", "ACC", "ACG", "ACU"],
-        "A": ["GCA", "GCC", "GCG", "GCU"],
-        "I": ["AUA", "AUC", "AUU"],
-        "F": ["UUC", "UUU"],
-        "H": ["CAC", "CAU"],
-        "Y": ["UAC", "UAU"],
-        "Q": ["CAA", "CAG"],
-        "C": ["UGC", "UGU"],
-        "N": ["AAC", "AAU"],
-        "D": ["GAC", "GAU"],
-        "K": ["AAA", "AAG"],
-        "M": ["AUG"],
-        "W": ["UGG"],
-    }
-
     def __init__(self, sequence):
         super().__init__(sequence)
 
 
     def translate_to_rna(self):
+        AA_CODON_DICT = {
+            "G": ["GGA", "GGU", "GGC", "GGG"],
+            "R": ["AGA", "AGG", "CGA", "CGC", "CGG", "CGU"],
+            "S": ["AGC", "AGU", "UCA", "UCC", "UCG", "UCU"],
+            "E": ["GAA", "GAG"],
+            "P": ["CCA", "CCC", "CCG", "CCU"],
+            "L": ["CUA", "CUC", "CUG", "CUU", "UUA", "UUG"],
+            "V": ["GUA", "GUC", "GUG", "GUU"],
+            "T": ["ACA", "ACC", "ACG", "ACU"],
+            "A": ["GCA", "GCC", "GCG", "GCU"],
+            "I": ["AUA", "AUC", "AUU"],
+            "F": ["UUC", "UUU"],
+            "H": ["CAC", "CAU"],
+            "Y": ["UAC", "UAU"],
+            "Q": ["CAA", "CAG"],
+            "C": ["UGC", "UGU"],
+            "N": ["AAC", "AAU"],
+            "D": ["GAC", "GAU"],
+            "K": ["AAA", "AAG"],
+            "M": ["AUG"],
+            "W": ["UGG"],
+        }
         rna_seq = ""
         for aa in self.sequence:
             codon = choice(AA_CODON_DICT[aa])
             rna_seq += codon
         return rna_seq
+
