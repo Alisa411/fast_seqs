@@ -163,6 +163,11 @@ class AminoAcidSequence(BiologicalSequence):
     def __init__(self, sequence):
         super().__init__(sequence)
 
+    def __len__(self):
+        return len(self.sequence)
+
+    def __getitem__(self, index):
+        return self.sequence[index]
 
     def translate_to_rna(self):
         AA_CODON_DICT = {
